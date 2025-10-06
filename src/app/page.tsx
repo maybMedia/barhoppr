@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="flex items-center justify-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
+    <div className="flex items-center justify-center p-8 pb-20 gap-16 sm:p-20">
       <main className="flex flex-col gap-[32px] items-center justify-center w-full">
         <div className="flex flex-col items-center">
           <Image src="/BarHoppr.png" alt="BarHoppr Logo" width={128} height={128} />
