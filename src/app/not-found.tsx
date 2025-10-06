@@ -9,7 +9,7 @@ export default function NotFound() {
       <main className="flex flex-col items-center justify-center w-full">
         <Card className="max-w-md w-full p-0 shadow-xl rounded-2xl">
           <CardHeader className="flex flex-col items-center gap-2 pt-8">
-            <Image src="/BarHoppr.png" alt="BarHoppr Logo" width={96} height={96} />
+            <Image src="/lost.png" alt="BarHoppr Logo" width={128} height={128} />
             <h1 className="text-4xl font-extrabold text-primary">404</h1>
             <h2 className="text-2xl font-extrabold text-primary">Page Not Found</h2>
           </CardHeader>
