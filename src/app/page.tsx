@@ -14,7 +14,7 @@ export default function Home() {
           </CardHeader>
           <CardContent className="px-8 pb-0">
             <p className="text-lg text-muted-foreground text-center">
-              Find your favourite beer on tap near you! Discover new bars, plan your next night out, and explore local venues with BarHoppr.
+              Find your favorite beer on tap near you! Discover new bars, plan your next night out, and explore local venues with BarHoppr.
             </p>
           </CardContent>
           <CardFooter className="flex justify-center pb-8 pt-6">
