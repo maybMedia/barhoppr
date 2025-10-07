@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { parseEnv } from "./src/lib/try-parse-env";
+import { parseEnv } from "./lib/try-parse-env";
 
 const EnvSchema = z.object({
   TURSO_DATABASE_URL: z.url(),
