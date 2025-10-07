@@ -4,6 +4,7 @@
         "BarHoppr",
         "libsql",
         "turbopack",
-        "TURSO"
+        "TURSO",
+        "vercel"
     ]
 }
