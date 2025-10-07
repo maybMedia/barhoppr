@@ -1,19 +1,14 @@
-import { sql } from 'drizzle-orm';
+import { sql } from "drizzle-orm";
 import { int, real, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-import { user } from "./auth";
-import { pub } from "./pub";
-
-export const pubLog = sqliteTable("pubLog", {
+export const pub = sqliteTable("pub", {
   id: int().primaryKey({ autoIncrement: true }),
   name: text().notNull(),
+  slug: text().notNull().unique(),
   description: text().notNull(),
-  startedAt: int().notNull(),
   lat: real().notNull(),
   long: real().notNull(),
   drinks: text().notNull().default(sql`(json_array())`),
-  pubId: int().notNull().references(() => pub.id),
-  userId: int().notNull().references(() => user.id),
   createdAt: int().notNull().$default(() => Date.now()),
   updatedAt: int().notNull().$default(() => Date.now()).$onUpdate(() => Date.now()),
 });

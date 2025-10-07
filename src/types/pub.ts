@@ -7,7 +7,7 @@ export interface Pub {
     latitude: number;
     longitude: number;
     address: string;
-    beersOnTap: Drink[];
+    drinks: Drink[];
     images: string[];
     log: Log[];
 }
