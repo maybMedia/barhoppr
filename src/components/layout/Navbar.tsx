@@ -17,8 +17,11 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
 
 export function Navbar() {
+  const { data: session } = useSession();
+
   return (
     <nav className="w-full border-b bg-sidebar text-sidebar-foreground">
       <div className="mx-auto flex max-w-7xl items-center justify-between p-4">
@@ -44,13 +47,26 @@ export function Navbar() {
         {/* Right Side */}
         <div className="flex items-center gap-2">
           {/* Desktop login */}
-          <div className="hidden md:block">
-            <Button asChild variant="outline" size="sm">
-              <Link href="/login">Log in</Link>
+          
+          {!session &&
+          (<div className="hidden md:block">
+            <Button asChild variant="outline" size="sm" className="pointer min-w-42">
+              <Link href="/logIn">Log in</Link>
             </Button>
-          </div>
+          </div>)}
+          {session && (
+            <div className="hidden md:block">
+            <Button asChild variant="outline" size="sm" className="pointer">
+              <Link href="/account">
+                <Image src={session.user?.image || "/default-profile.png"} alt="Profile" width={24} height={24} className="inline-block mr-2 rounded-full" />
+                {session.user?.name}
+              </Link>
+            </Button>
+            </div>
+          )}
 
           {/* Profile Dropdown (desktop only for now) */}
+          {session && (
           <div className="hidden md:block">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -60,14 +76,14 @@ export function Navbar() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>
-                  <Link href="/settings">Settings</Link>
+                  <Link className="cursor-pointer" href="/settings">Settings</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/logout">Log out</Link>
+                  <p className="cursor-pointer" onClick={() => signOut()}>Log out</p>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>
+          </div>)}
 
           {/* Mobile Hamburger Menu */}
           <div className="md:hidden">
@@ -101,25 +117,40 @@ export function Navbar() {
                   >
                     About
                   </Link>
-                  <Link
+                  {session && (
+                    <Link
+                      className="border-b border-sidebar-foreground pl-4 text-accent dark:text-sidebar-accent-foreground"
+                      href="/settings"
+                    >
+                      Settings
+                    </Link>
+                  )}
+                  {!session && (<Link
                     className="border-b border-sidebar-foreground pl-4 text-accent dark:text-sidebar-accent-foreground"
-                    href="/login"
+                    href="/logIn"
                   >
                     Log in
-                  </Link>
-                  <Link
-                    className="border-b border-sidebar-foreground pl-4 text-accent dark:text-sidebar-accent-foreground"
-                    href="/settings"
-                  >
-                    Settings
-                  </Link>
-                  <Link
-                    className="border-b border-sidebar-foreground pl-4 text-accent dark:text-sidebar-accent-foreground"
-                    href="/logout"
-                  >
-                    Log out
-                  </Link>
+                  </Link>)}
                 </div>
+
+                {session && (
+                  <div className="flex flex-row gap-2 justify-center">
+                    <div className="md:block">
+                      <Button asChild variant="secondary" size="sm" className="pointer">
+                        <Link href="/account">
+                          <Image src={session.user?.image || "/default-profile.png"} alt="Profile" width={24} height={24} className="inline-block mr-2 rounded-full" />
+                          {session.user?.name}
+                        </Link>
+                      </Button>
+                    </div>
+
+                    <Button asChild variant="default" size="sm" className="pointer" onClick={() => signOut()}>
+                      <p>Sign Out</p>
+                    </Button>
+                  </div>
+                )
+                }
+
               </SheetContent>
             </Sheet>
           </div>

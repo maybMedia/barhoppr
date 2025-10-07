@@ -2,8 +2,10 @@
     "typescript.tsdk": "node_modules\\typescript\\lib",
     "cSpell.words": [
         "BarHoppr",
+        "googleusercontent",
         "libsql",
         "turbopack",
-        "TURSO"
+        "TURSO",
+        "vercel"
     ]
 }
