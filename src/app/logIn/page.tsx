@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 export default function LoginPage() {
   const [isLight, setIsLight] = useState(false);
