@@ -1,4 +1,4 @@
-import { Beer } from "./beer";
+import { Drink } from "./drink";
 import { Log } from "./log";
 
 export interface Pub {
@@ -7,7 +7,7 @@ export interface Pub {
     latitude: number;
     longitude: number;
     address: string;
-    beersOnTap: Beer[];
+    drinks: Drink[];
     images: string[];
     log: Log[];
 }
