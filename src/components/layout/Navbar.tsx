@@ -125,13 +125,17 @@ export function Navbar() {
                       Settings
                     </Link>
                   )}
-                  {!session && (<Link
-                    className="border-b border-sidebar-foreground pl-4 text-accent dark:text-sidebar-accent-foreground"
-                    href="/logIn"
-                  >
-                    Log in
-                  </Link>)}
                 </div>
+
+                {!session && (
+                  <Button size="sm" variant="outline" className="cursor-pointer mx-4 text-primary">
+                    <Link
+                      href="/logIn"
+                    >
+                      Log in
+                    </Link>
+                  </Button>
+                )}
 
                 {session && (
                   <div className="flex flex-row gap-2 justify-center">

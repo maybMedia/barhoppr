@@ -29,7 +29,7 @@ export default function LoginPage() {
             <Image src="/BarHoppr.png" alt="BarHoppr Logo" width={64} height={64} />
             <h1 className="text-3xl font-bold text-primary mb-2">Sign in to BarHoppr</h1>
           </CardHeader>
-          <CardContent className="px-8 pb-0 flex flex-col items-center gap-6">
+          <CardContent className="px-8 pb-8 flex flex-col items-center gap-6">
             <p className="text-muted-foreground text-center mb-4">
               Login with a service below to continue.
             </p>
