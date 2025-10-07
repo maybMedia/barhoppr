@@ -50,7 +50,7 @@ export function Navbar() {
           
           {!session &&
           (<div className="hidden md:block">
-            <Button asChild variant="outline" size="sm" className="pointer">
+            <Button asChild variant="outline" size="sm" className="pointer min-w-42">
               <Link href="/logIn">Log in</Link>
             </Button>
           </div>)}

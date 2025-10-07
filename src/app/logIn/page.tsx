@@ -20,7 +20,6 @@ export default function LoginPage() {
 
   const githubIcon = isLight ? "providers/github-light.svg" : "providers/github.svg";
   const googleIcon = isLight ? "providers/google-light.svg" : "providers/google.svg";
-  const appleIcon = isLight ? "providers/apple-light.svg" : "providers/apple.svg";
 
   return (
     <div className="flex items-center justify-center bg-background p-4">
@@ -50,14 +49,6 @@ export default function LoginPage() {
               <Image src={googleIcon} alt="Google" width={24} height={24} />
               Continue with Google
             </Button>
-            {/* <Button
-              className="w-full flex items-center gap-2 cursor-pointer"
-              variant="outline"
-              onClick={() => signIn("apple")}
-            >
-              <Image src={appleIcon} alt="Apple" width={24} height={24} />
-              Continue with Apple
-            </Button> */}
           </CardContent>
         </Card>
       </main>

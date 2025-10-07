@@ -1,13 +1,13 @@
 import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-import { user } from "./auth";
+import { users } from "./auth";
 import { pubLog } from "./pub-log";
 
 export const pubLogImage = sqliteTable("pubLogImage", {
   id: int().primaryKey({ autoIncrement: true }),
   key: text().notNull(),
   locationLogId: int().notNull().references(() => pubLog.id),
-  userId: int().notNull().references(() => user.id),
+  userId: int().notNull().references(() => users.id),
   createdAt: int().notNull().$default(() => Date.now()),
   updatedAt: int().notNull().$default(() => Date.now()).$onUpdate(() => Date.now()),
 });
