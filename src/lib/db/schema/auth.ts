@@ -3,6 +3,7 @@ import { createClient } from "@libsql/client"
 import { drizzle } from "drizzle-orm/libsql"
 import type { AdapterAccountType } from "next-auth/adapters"
 import Env from "@/env" 
+import { sql } from "drizzle-orm"
 
 const client = createClient({
   url: Env.TURSO_DATABASE_URL,
@@ -18,6 +19,7 @@ export const users = sqliteTable("user", {
   email: text("email").unique(),
   emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
   image: text("image"),
+  favoriteDrinks: text().default("[]"), // Use a constant string instead
 })
  
 export const accounts = sqliteTable(

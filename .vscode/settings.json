@@ -6,6 +6,7 @@
         "libsql",
         "turbopack",
         "TURSO",
+        "unixepoch",
         "vercel"
     ]
 }

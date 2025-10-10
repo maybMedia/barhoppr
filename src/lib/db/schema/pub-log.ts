@@ -8,7 +8,6 @@ export const pubLog = sqliteTable("pubLog", {
   id: int().primaryKey({ autoIncrement: true }),
   name: text().notNull(),
   description: text().notNull(),
-  startedAt: int().notNull(),
   lat: real().notNull(),
   long: real().notNull(),
   drinks: text().notNull().default(sql`(json_array())`),
