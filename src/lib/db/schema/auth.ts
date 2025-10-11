@@ -3,7 +3,6 @@ import { createClient } from "@libsql/client"
 import { drizzle } from "drizzle-orm/libsql"
 import type { AdapterAccountType } from "next-auth/adapters"
 import Env from "@/env" 
-import { sql } from "drizzle-orm"
 
 const client = createClient({
   url: Env.TURSO_DATABASE_URL,
