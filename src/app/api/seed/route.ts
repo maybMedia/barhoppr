@@ -4,6 +4,21 @@ import { db } from "@/lib/db";
 import { pub, drink, pubLog, pubDrinks, pubLogDrinks } from "@/lib/db/schema";
 
 export async function GET(req: NextRequest) {
+
+  const host = req.headers.get("host") || "";
+  const forwarded = req.headers.get("x-forwarded-for") || "";
+
+  if (
+    !host.includes("localhost") &&
+    !host.includes("192.168.0.250") &&
+    !forwarded.includes("192.168.0.250")
+  ) {
+    return NextResponse.json(
+      { success: false, error: "Seed route is only accessible from localhost" },
+      { status: 403 }
+    );
+  }
+
   try {
     await db.insert(pub).values([
       {
