@@ -36,8 +36,8 @@ export function Navbar() {
           <Link href="/map" className="hover:text-sidebar-primary hover:bg-sidebar-accent px-2 py-1 rounded transition-all duration-200">
             Map
           </Link>
-          <Link href="/reviews" className="hover:text-sidebar-primary hover:bg-sidebar-accent px-2 py-1 rounded transition-all duration-200">
-            Reviews
+          <Link href="/search" className="hover:text-sidebar-primary hover:bg-sidebar-accent px-2 py-1 rounded transition-all duration-200">
+            Search
           </Link>
           <Link href="/about" className="hover:text-sidebar-primary hover:bg-sidebar-accent px-2 py-1 rounded transition-all duration-200">
             About
@@ -107,9 +107,9 @@ export function Navbar() {
                   </Link>
                   <Link
                     className="border-b border-sidebar-foreground pl-4 text-accent dark:text-sidebar-accent-foreground"
-                    href="/reviews"
+                    href="/search"
                   >
-                    Reviews
+                    Search
                   </Link>
                   <Link
                     className="border-b border-sidebar-foreground pl-4 text-accent dark:text-sidebar-accent-foreground"
