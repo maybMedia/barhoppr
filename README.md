@@ -29,6 +29,19 @@ bun dev
 
 4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## Dependency security
+
+The npm overrides keep PostCSS and the migration loader's esbuild on patched
+versions. The Minimatch override uses v11 to address
+[GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249).
+`tools/minimatch-compat.cjs` adapts its CommonJS export for the lint plugins when
+ESLint loads its configuration. All matching uses upstream v11; the adapter
+does not modify installed files. Remove it and the Minimatch override when the
+lint dependencies support patched releases directly.
+
+Run `node --test tools/minimatch-compat.test.cjs`, `npm run lint`, and `npm audit`
+to verify the compatibility adapter and dependency security.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

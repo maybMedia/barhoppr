@@ -19,10 +19,10 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^17.2.3",
-    "drizzle-orm": "^0.44.6",
+    "drizzle-orm": "^0.45.4",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.542.0",
-    "next": "15.5.9",
+    "next": "^15.5.28",
     "next-auth": "^5.0.0-beta.29",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -33,17 +33,18 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
+    "@eslint/eslintrc": "^3.3.7",
     "@tailwindcss/postcss": "^4",
     "@types/leaflet": "^1.9.21",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "drizzle-kit": "^0.31.5",
-    "eslint": "^9",
-    "eslint-config-next": "15.5.2",
+    "drizzle-kit": "^0.31.11",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "15.5.28",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.6",
+    "minimatch": "^11.0.4",
     "tailwindcss": "^4",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
@@ -52,6 +53,13 @@
     "typescript": "^5.9.3"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": "next lint --fix"
+    "*.{js,jsx,ts,tsx}": "eslint --fix"
+  },
+  "overrides": {
+    "minimatch": "$minimatch",
+    "postcss": "^8.5.32",
+    "@esbuild-kit/core-utils": {
+      "esbuild": "^0.25.4"
+    }
   }
 }
