@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Beer, MapPin, Search, type LucideIcon } from "lucide-react";
-import type { SearchSuggestion } from "@/lib/search-autocomplete-menu";
+import type { SearchSuggestion } from "@/lib/search-suggestions";
 
 export function SearchAutocomplete({
   id,
