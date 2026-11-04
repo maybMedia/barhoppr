@@ -1,31 +1,25 @@
-import Image from "next/image";
-import Link from "next/link";
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import { ArrowRight, Beer } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { TransitionLink } from "@/components/page-transition";
 
 export default function NotFound() {
   return (
-    <div className="flex items-center justify-center bg-background p-4">
-      <main className="flex flex-col items-center justify-center w-full">
-        <Card className="max-w-md w-full p-0 shadow-xl rounded-2xl">
-          <CardHeader className="flex flex-col items-center gap-2 pt-8">
-            <Image src="/lost.png" alt="Lost Monkey" width={128} height={128} />
-            <h1 className="text-4xl font-extrabold text-primary">404</h1>
-            <h2 className="text-2xl font-extrabold text-primary">Page Not Found</h2>
-          </CardHeader>
-          <CardContent className="px-8 pb-0">
-            <p className="text-lg text-muted-foreground text-center">
-              Oops! We could not find that page.<br />
-              Try heading back to the homepage!
-            </p>
-          </CardContent>
-          <CardFooter className="flex justify-center pb-8 pt-6 gap-4">
-            <Button asChild size="lg" className="font-bold">
-              <Link href="/">Home</Link>
-            </Button>
-          </CardFooter>
-        </Card>
-      </main>
-    </div>
+    <main id="main-content" className="not-found">
+      <div>
+        <Beer size={64} strokeWidth={1.3} />
+        <span className="eyebrow justify-center">404 · An empty glass</span>
+        <h1>Missed the round?</h1>
+        <p>
+          This page seems to have wandered off. There’s still plenty of good
+          stuff to discover.
+        </p>
+        <Button asChild className="button-large">
+          <TransitionLink href="/map">
+            Back to the good places
+            <ArrowRight size={17} />
+          </TransitionLink>
+        </Button>
+      </div>
+    </main>
   );
 }

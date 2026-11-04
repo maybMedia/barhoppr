@@ -1,7 +1,22 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
+import { useState } from "react";
+import { usePathname } from "next/navigation";
+import {
+  Beer,
+  ChevronDown,
+  Compass,
+  Info,
+  LogOut,
+  Menu,
+  Monitor,
+  Moon,
+  Search,
+  Sun,
+  UserRound,
+  X,
+} from "lucide-react";
+import { signOut, useSession } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -9,157 +24,144 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { Menu } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
+import { TransitionLink } from "@/components/page-transition";
+import { useTheme } from "@/components/theme-provider";
+import { BrandMark } from "@/components/brand-mark";
+
+const links = [
+  { href: "/map", label: "Explore the map", icon: Compass },
+  { href: "/search", label: "Find a drink", icon: Search },
+  { href: "/about", label: "Our story", icon: Info },
+];
 
 export function Navbar() {
-  const { data: session } = useSession();
-
+  const { data: session, status } = useSession();
+  const { theme, setTheme } = useTheme();
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const close = () => setOpen(false);
   return (
-    <nav className="w-full border-b bg-sidebar text-sidebar-foreground">
-      <div className="mx-auto flex max-w-7xl items-center justify-between p-4">
-        {/* Logo */}
-        <Link href="/" className="text-xl font-bold text-sidebar-primary">
-          <Image src="/BarHoppr.png" alt="BarHoppr Logo" width={64} height={64} className="inline-block mr-2" />
-          BarHoppr
-        </Link>
-
-        {/* Desktop Links */}
-        <div className="hidden gap-6 md:flex">
-          <Link href="/map" className="hover:text-sidebar-primary hover:bg-sidebar-accent px-2 py-1 rounded transition-all duration-200">
-            Map
-          </Link>
-          <Link href="/search" className="hover:text-sidebar-primary hover:bg-sidebar-accent px-2 py-1 rounded transition-all duration-200">
-            Search
-          </Link>
-          <Link href="/about" className="hover:text-sidebar-primary hover:bg-sidebar-accent px-2 py-1 rounded transition-all duration-200">
-            About
-          </Link>
+    <header className="site-header">
+      <nav className="page-width navbar" aria-label="Main navigation">
+        <TransitionLink href="/" className="brand" onClick={close}>
+          <span className="brand-icon">
+            <BrandMark />
+          </span>
+          BarHoppr<span className="brand-dot">.</span>
+        </TransitionLink>
+        <div className="desktop-links">
+          {links.map(({ href, label }) => (
+            <TransitionLink
+              key={href}
+              href={href}
+              className={pathname === href ? "nav-link active" : "nav-link"}
+              aria-current={pathname === href ? "page" : undefined}
+            >
+              {label}
+            </TransitionLink>
+          ))}
         </div>
-
-        {/* Right Side */}
-        <div className="flex items-center gap-2">
-          {/* Desktop login */}
-          
-          {!session &&
-          (<div className="hidden md:block">
-            <Button asChild variant="outline" size="sm" className="pointer min-w-42">
-              <Link href="/logIn">Log in</Link>
-            </Button>
-          </div>)}
-          {session && (
-            <div className="hidden md:block">
-            <Button asChild variant="outline" size="sm" className="pointer">
-              <Link href="/account">
-                <Image src={session.user?.image || "/default-profile.png"} alt="Profile" width={24} height={24} className="inline-block mr-2 rounded-full" />
-                {session.user?.name}
-              </Link>
-            </Button>
-            </div>
-          )}
-
-          {/* Profile Dropdown (desktop only for now) */}
-          {session && (
-          <div className="hidden md:block">
+        <div className="nav-actions">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Change colour theme"
+                className="theme-toggle"
+              >
+                <Sun className="dark:hidden" size={19} />
+                <Moon className="hidden dark:block" size={19} />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {(
+                [
+                  { value: "light", icon: Sun, label: "Light" },
+                  { value: "dark", icon: Moon, label: "Dark" },
+                  { value: "system", icon: Monitor, label: "Match my device" },
+                ] as const
+              ).map(({ value, icon: Icon, label }) => (
+                <DropdownMenuItem key={value} onSelect={() => setTheme(value)}>
+                  <Icon size={16} />
+                  {label}
+                  <span className="ml-auto">{theme === value ? "✓" : ""}</span>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+          {session ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="secondary" size="sm">
-                  Menu
+                <Button variant="outline" className="profile-button">
+                  <UserRound size={17} />
+                  <span>
+                    {session.user?.name?.split(" ")[0] || "Your account"}
+                  </span>
+                  <ChevronDown size={14} />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>
-                  <Link className="cursor-pointer" href="/settings">Settings</Link>
+                  <TransitionLink href="/map">
+                    <Beer size={16} />
+                    Share a visit
+                  </TransitionLink>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <p className="cursor-pointer" onClick={() => signOut()}>Log out</p>
+                <DropdownMenuItem
+                  onSelect={() => signOut({ callbackUrl: "/" })}
+                >
+                  <LogOut size={16} />
+                  Sign out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-          </div>)}
-
-          {/* Mobile Hamburger Menu */}
-          <div className="md:hidden">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-12 w-12">
-                  <Menu className="h-10 w-10" />
-                  <span className="sr-only">Open menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-64">
-                <SheetHeader>
-                  <SheetTitle>Menu</SheetTitle>
-                </SheetHeader>
-                <div className="mt-4 flex flex-col gap-4">
-                  <Link
-                    className="border-b border-sidebar-foreground pl-4 text-accent dark:text-sidebar-accent-foreground"
-                    href="/map"
-                  >
-                    Map
-                  </Link>
-                  <Link
-                    className="border-b border-sidebar-foreground pl-4 text-accent dark:text-sidebar-accent-foreground"
-                    href="/search"
-                  >
-                    Search
-                  </Link>
-                  <Link
-                    className="border-b border-sidebar-foreground pl-4 text-accent dark:text-sidebar-accent-foreground"
-                    href="/about"
-                  >
-                    About
-                  </Link>
-                  {session && (
-                    <Link
-                      className="border-b border-sidebar-foreground pl-4 text-accent dark:text-sidebar-accent-foreground"
-                      href="/settings"
-                    >
-                      Settings
-                    </Link>
-                  )}
-                </div>
-
-                {!session && (
-                  <Button size="sm" variant="outline" className="cursor-pointer mx-4 text-primary">
-                    <Link
-                      href="/logIn"
-                    >
-                      Log in
-                    </Link>
-                  </Button>
-                )}
-
-                {session && (
-                  <div className="flex flex-row gap-2 justify-center">
-                    <div className="md:block">
-                      <Button asChild variant="secondary" size="sm" className="pointer">
-                        <Link href="/account">
-                          <Image src={session.user?.image || "/default-profile.png"} alt="Profile" width={24} height={24} className="inline-block mr-2 rounded-full" />
-                          {session.user?.name}
-                        </Link>
-                      </Button>
-                    </div>
-
-                    <Button asChild variant="default" size="sm" className="pointer" onClick={() => signOut()}>
-                      <p>Sign Out</p>
-                    </Button>
-                  </div>
-                )
-                }
-
-              </SheetContent>
-            </Sheet>
-          </div>
+          ) : (
+            <Button asChild size="sm" className="desktop-signin">
+              <TransitionLink href="/logIn">
+                {status === "loading" ? "Welcome" : "Join the round"}
+                <UserRound size={15} />
+              </TransitionLink>
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="mobile-menu-toggle"
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            aria-controls="mobile-navigation"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <X /> : <Menu />}
+          </Button>
         </div>
-      </div>
-    </nav>
+      </nav>
+      {open && (
+        <nav
+          id="mobile-navigation"
+          className="mobile-navigation"
+          aria-label="Mobile navigation"
+        >
+          {links.map(({ href, label, icon: Icon }) => (
+            <TransitionLink
+              key={href}
+              href={href}
+              onClick={close}
+              aria-current={pathname === href ? "page" : undefined}
+            >
+              <Icon size={20} />
+              {label}
+            </TransitionLink>
+          ))}
+          {!session && (
+            <TransitionLink href="/logIn" onClick={close}>
+              <UserRound size={20} />
+              Join the round
+            </TransitionLink>
+          )}
+        </nav>
+      )}
+    </header>
   );
 }

@@ -1,57 +1,144 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import Image from "next/image";
+import {
+  Github,
+  Heart,
+  Loader2,
+  MapPin,
+  MessageCircle,
+  Star,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { BrandMark } from "@/components/brand-mark";
+
+function SignInButtons() {
+  const params = useSearchParams();
+  const requested = params.get("callbackUrl") || "/map";
+  const callbackUrl =
+    requested.startsWith("/") &&
+    !requested.startsWith("//") &&
+    !requested.includes("\\")
+      ? requested
+      : "/map";
+  const [pending, setPending] = useState("");
+  const [error, setError] = useState("");
+  const login = async (provider: "github" | "google") => {
+    setPending(provider);
+    setError("");
+    try {
+      await signIn(provider, { callbackUrl });
+    } catch {
+      setError("We couldn’t start sign-in. Please try again.");
+      setPending("");
+    }
+  };
+  return (
+    <>
+      <div className="auth-buttons">
+        <Button
+          variant="outline"
+          onClick={() => login("github")}
+          disabled={Boolean(pending)}
+        >
+          {pending === "github" ? (
+            <Loader2 className="animate-spin" />
+          ) : (
+            <Github size={20} />
+          )}
+          Continue with GitHub
+        </Button>
+        <Button
+          variant="outline"
+          onClick={() => login("google")}
+          disabled={Boolean(pending)}
+        >
+          {pending === "google" ? (
+            <Loader2 className="animate-spin" />
+          ) : (
+            <>
+              <Image
+                src="/providers/google-light.svg"
+                width={20}
+                height={20}
+                alt=""
+                className="dark:hidden"
+              />
+              <Image
+                src="/providers/google.svg"
+                width={20}
+                height={20}
+                alt=""
+                className="hidden dark:block"
+              />
+            </>
+          )}
+          Continue with Google
+        </Button>
+      </div>
+      {(error || params.get("error")) && (
+        <p className="status-message error-message" role="alert">
+          {error ||
+            "Sign-in didn’t finish. Please try again or choose another provider."}
+        </p>
+      )}
+    </>
+  );
+}
 
 export default function LoginPage() {
-  const [isLight, setIsLight] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-color-scheme: light)");
-    setIsLight(mq.matches);
-
-    const handler = (e: MediaQueryListEvent) => setIsLight(e.matches);
-    mq.addEventListener("change", handler);
-    return () => mq.removeEventListener("change", handler);
-  }, []);
-
-  const githubIcon = isLight ? "providers/github-light.svg" : "providers/github.svg";
-  const googleIcon = isLight ? "providers/google-light.svg" : "providers/google.svg";
-
   return (
-    <div className="flex items-center justify-center bg-background p-4">
-      <main className="flex flex-col items-center justify-center w-full">
-        <Card className="max-w-md w-full p-0 shadow-xl rounded-2xl">
-          <CardHeader className="flex flex-col items-center gap-2 pt-8">
-            <Image src="/BarHoppr.png" alt="BarHoppr Logo" width={64} height={64} />
-            <h1 className="text-3xl font-bold text-primary mb-2">Sign in to BarHoppr</h1>
-          </CardHeader>
-          <CardContent className="px-8 pb-8 flex flex-col items-center gap-6">
-            <p className="text-muted-foreground text-center mb-4">
-              Login with a service below to continue.
-            </p>
-            <Button
-              className="w-full flex items-center gap-2 mb-2 cursor-pointer"
-              variant="outline"
-              onClick={() => signIn("github")}
-            >
-              <Image src={githubIcon} alt="GitHub" width={24} height={24} />
-              Continue with GitHub
-            </Button>
-            <Button
-              className="w-full flex items-center gap-2 mb-2 cursor-pointer"
-              variant="outline"
-              onClick={() => signIn("google")}
-            >
-              <Image src={googleIcon} alt="Google" width={24} height={24} />
-              Continue with Google
-            </Button>
-          </CardContent>
-        </Card>
-      </main>
-    </div>
+    <main id="main-content" className="page-width auth-page">
+      <div className="auth-illustration">
+        <span className="eyebrow eyebrow-pill">
+          <Heart size={13} />
+          Good company starts here
+        </span>
+        <h1>
+          There’s a place
+          <br />
+          for you at
+          <br />
+          the table.
+        </h1>
+        <p>
+          Join the round, share your finds, and help someone discover their next
+          favourite local.
+        </p>
+        <div className="auth-perks">
+          <div>
+            <Star size={20} />
+            Rate the places you’ve tried
+          </div>
+          <div>
+            <MessageCircle size={20} />
+            Share a drink and a few words
+          </div>
+          <div>
+            <MapPin size={20} />
+            Help good locals get discovered
+          </div>
+        </div>
+      </div>
+      <section className="auth-card">
+        <BrandMark size={50} />
+        <h2>Join the round.</h2>
+        <p>
+          Sign in with an account you already use.
+          <br />
+          Your next good find is waiting.
+        </p>
+        <Suspense fallback={<div className="skeleton h-28 mt-6" />}>
+          <SignInButtons />
+        </Suspense>
+        <p className="auth-small">
+          Just browsing? The map and drink search are always free to explore.
+          Sign in when you’re ready to share.
+        </p>
+      </section>
+    </main>
   );
 }

@@ -6,8 +6,17 @@ import { pubLog } from "./pub-log";
 export const pubLogImage = sqliteTable("pubLogImage", {
   id: int().primaryKey({ autoIncrement: true }),
   key: text().notNull(),
-  locationLogId: int().notNull().references(() => pubLog.id),
-  userId: int().notNull().references(() => users.id),
-  createdAt: int().notNull().$default(() => Date.now()),
-  updatedAt: int().notNull().$default(() => Date.now()).$onUpdate(() => Date.now()),
+  locationLogId: int()
+    .notNull()
+    .references(() => pubLog.id),
+  userId: text()
+    .notNull()
+    .references(() => users.id),
+  createdAt: int()
+    .notNull()
+    .$default(() => Date.now()),
+  updatedAt: int()
+    .notNull()
+    .$default(() => Date.now())
+    .$onUpdate(() => Date.now()),
 });

@@ -1,43 +1,60 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { eq, max } from "drizzle-orm";
 import { db } from "@/lib/db";
-import { pub, drink, pubDrinks } from "@/lib/db/schema";
+import { pub, drink, pubDrinks, pubLog, pubLogDrinks } from "@/lib/db/schema";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    // Fetch pubs
-    const pubsData = await db.select().from(pub);
-
-    // Fetch all pub-drink relationships in one go
-    const pubDrinkRelations = await db
-      .select({
-        pubId: pubDrinks.pub_Id,
-        drinkId: pubDrinks.drink_Id,
-      })
-      .from(pubDrinks);
-
-    // Fetch all drinks
-    const drinksData = await db.select().from(drink);
-
-    // Map drinks to their pubs
-    const pubsWithDrinks = pubsData.map((p) => {
-      const relatedDrinkIds = pubDrinkRelations
-        .filter((pd) => pd.pubId === p.id)
-        .map((pd) => pd.drinkId);
-
-      const pubDrinksList = drinksData.filter((d) =>
-        relatedDrinkIds.includes(d.id)
-      );
-
-      return { ...p, drinks: pubDrinksList };
-    });
-
-    return NextResponse.json(pubsWithDrinks);
+    const [pubs, links, drinks, sightings] = await Promise.all([
+      db.select().from(pub),
+      db
+        .select({ pubId: pubDrinks.pub_Id, drinkId: pubDrinks.drink_Id })
+        .from(pubDrinks),
+      db.select().from(drink),
+      db
+        .select({
+          pubId: pubLog.pub_Id,
+          drinkId: pubLogDrinks.drink_Id,
+          lastReportedAt: max(pubLog.created_At),
+        })
+        .from(pubLogDrinks)
+        .innerJoin(pubLog, eq(pubLogDrinks.pub_Log_Id, pubLog.id))
+        .groupBy(pubLog.pub_Id, pubLogDrinks.drink_Id),
+    ]);
+    const catalogue = new Map(drinks.map((drink) => [drink.id, drink]));
+    const lastReported = new Map(
+      sightings.map((sighting) => [
+        `${sighting.pubId}:${sighting.drinkId}`,
+        sighting.lastReportedAt,
+      ]),
+    );
+    const venueDrinks = new Map<number, Set<number>>();
+    for (const link of links) {
+      if (!venueDrinks.has(link.pubId)) venueDrinks.set(link.pubId, new Set());
+      venueDrinks.get(link.pubId)!.add(link.drinkId);
+    }
+    return NextResponse.json(
+      pubs.map((venue) => ({
+        ...venue,
+        drinks: [...(venueDrinks.get(venue.id) || [])].flatMap((id) => {
+          const entry = catalogue.get(id);
+          return entry
+            ? [
+                {
+                  ...entry,
+                  lastReportedAt: lastReported.get(`${venue.id}:${id}`) ?? null,
+                },
+              ]
+            : [];
+        }),
+      })),
+      { headers: { "Cache-Control": "no-store" } },
+    );
   } catch (error) {
     console.error("Failed to fetch pubs:", error);
     return NextResponse.json(
       { error: "Failed to fetch pubs" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

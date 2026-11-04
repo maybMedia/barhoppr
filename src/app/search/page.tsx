@@ -1,28 +1,35 @@
-"use client"
+import { Suspense } from "react";
+import { Beer } from "lucide-react";
+import { SearchExperience } from "@/components/search-experience";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Construction } from "lucide-react"
-
-export default function WipPage() {
+export default function SearchPage() {
   return (
-    <div className="flex items-center justify-center pt-8 bg-background p-4">
-      <Card className="w-full max-w-md text-center">
-        <CardHeader className="flex flex-col items-center">
-          <Construction className="h-14 w-14 mb-2 text-tertiary" />
-          <CardTitle className="text-2xl">Work In Progress</CardTitle>
-        </CardHeader>
-
-        <CardContent className="text-muted-foreground text-lg">
-          <p className="mb-6">
-            The &quot;Search&quot; page is currently under development.<br />
-            Check back soon!
-          </p>
-          <Button variant="default" onClick={() => window.history.back()}>
-            Go Back
-          </Button>
-        </CardContent>
-      </Card>
-    </div>
-  )
+    <main id="main-content" className="page-width">
+      <header className="page-heading">
+        <span className="eyebrow">
+          <Beer size={15} />
+          Find your flavour
+        </span>
+        <h1>What’s your next round?</h1>
+        <p>
+          Something familiar or a new favourite. Search a drink, explore an
+          area, or see what’s pouring near you.
+        </p>
+      </header>
+      {process.env.NEXT_PUBLIC_DEMO_DATA === "true" && (
+        <p className="status-message -mt-2 mb-5 text-[11px]">
+          <Beer size={15} />
+          Local demo: fictional venues, drinks, and sample visits for
+          development.
+        </p>
+      )}
+      <Suspense
+        fallback={
+          <div className="skeleton h-80 mb-16" aria-label="Loading search" />
+        }
+      >
+        <SearchExperience />
+      </Suspense>
+    </main>
+  );
 }

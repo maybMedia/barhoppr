@@ -1,12 +1,13 @@
-import { drizzle } from 'drizzle-orm/libsql';
-import Env from '@/env';
+import { drizzle } from "drizzle-orm/libsql/node";
+import Env from "@/env";
 
-// You can specify any property from the libsql connection options
-const db = drizzle({ 
-  connection: { 
-    url: Env.TURSO_DATABASE_URL!, 
-    authToken: Env.TURSO_AUTH_TOKEN!
-  }
+// Explicitly select the Node driver: Turbopack can resolve the generic entry
+// to the web client, which cannot open a local file: database.
+const db = drizzle({
+  connection: {
+    url: Env.TURSO_DATABASE_URL,
+    authToken: Env.TURSO_AUTH_TOKEN,
+  },
 });
 
 export { db };

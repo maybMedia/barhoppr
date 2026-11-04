@@ -1,15 +1,11 @@
-import { integer, sqliteTable, text, primaryKey } from "drizzle-orm/sqlite-core"
-import { createClient } from "@libsql/client"
-import { drizzle } from "drizzle-orm/libsql"
-import type { AdapterAccountType } from "next-auth/adapters"
-import Env from "@/env" 
+import {
+  integer,
+  sqliteTable,
+  text,
+  primaryKey,
+} from "drizzle-orm/sqlite-core";
+import type { AdapterAccountType } from "next-auth/adapters";
 
-const client = createClient({
-  url: Env.TURSO_DATABASE_URL,
-  authToken: Env.TURSO_AUTH_TOKEN,
-})
-export const db = drizzle(client)
- 
 export const users = sqliteTable("user", {
   id: text("id")
     .primaryKey()
@@ -19,8 +15,8 @@ export const users = sqliteTable("user", {
   emailVerified: integer("emailVerified", { mode: "timestamp_ms" }),
   image: text("image"),
   favoriteDrinks: text().default("[]"), // Use a constant string instead
-})
- 
+});
+
 export const accounts = sqliteTable(
   "account",
   {
@@ -42,17 +38,17 @@ export const accounts = sqliteTable(
     compoundKey: primaryKey({
       columns: [account.provider, account.providerAccountId],
     }),
-  })
-)
- 
+  }),
+);
+
 export const sessions = sqliteTable("session", {
   sessionToken: text("sessionToken").primaryKey(),
   userId: text("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   expires: integer("expires", { mode: "timestamp_ms" }).notNull(),
-})
- 
+});
+
 export const verificationTokens = sqliteTable(
   "verificationToken",
   {
@@ -64,9 +60,9 @@ export const verificationTokens = sqliteTable(
     compositePk: primaryKey({
       columns: [verificationToken.identifier, verificationToken.token],
     }),
-  })
-)
- 
+  }),
+);
+
 export const authenticators = sqliteTable(
   "authenticator",
   {
@@ -87,5 +83,5 @@ export const authenticators = sqliteTable(
     compositePK: primaryKey({
       columns: [authenticator.userId, authenticator.credentialID],
     }),
-  })
-)
+  }),
+);
