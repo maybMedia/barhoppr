@@ -7,6 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "tsx --test tools/*.test.ts && node --test tools/minimatch-compat.test.cjs",
+    "db:migrate:visits": "node tools/migrate-visit-rating.mjs",
+    "db:setup:local": "tsx tools/setup-local-db.ts",
     "prepare": "husky",
     "seed": ""
   },
